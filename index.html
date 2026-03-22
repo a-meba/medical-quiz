@@ -61,33 +61,94 @@
             </div>
 
             <!-- 패치 내역 -->
-            <div class="bg-slate-50 rounded-[2rem] p-6 border border-slate-200 shadow-inner">
-                <h3 class="text-xs font-black text-slate-400 mb-4 tracking-widest uppercase flex items-center">
-                    <span class="mr-2">📋</span> Patch History
-                </h3>
-                <div class="patch-log-scroll space-y-4 pr-2 text-sm">
-                    <div class="border-b border-slate-200 pb-3">
-                        <div class="flex items-center mb-1">
-                            <span class="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">v1.8.2</span>
-                            <span class="font-bold text-slate-700">UI 레이블 가독성 개선</span>
-                        </div>
-                        <p class="text-slate-500 text-xs leading-relaxed">모드별 이모티콘 추가 및 텍스트 직관화 (🚀 🎲 🔥)</p>
-                    </div>
-                    <div class="border-b border-slate-200 pb-3">
-                        <div class="flex items-center mb-1">
-                            <span class="bg-slate-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">v1.8.1</span>
-                            <span class="font-bold text-slate-700">홈 버튼 로직 수정</span>
-                        </div>
-                        <p class="text-slate-500 text-xs leading-relaxed">일부 브라우저에서 홈으로 버튼이 작동하지 않던 문제 해결</p>
-                    </div>
-                    <div class="border-b border-slate-200 pb-3 text-slate-400">
-                        <div class="flex items-center mb-1">
-                            <span class="bg-slate-300 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">OLD</span>
-                            <span class="font-bold">v1.0.0 ~ v1.7.0 내역 생략</span>
-                        </div>
-                    </div>
-                </div>
+           <div class="bg-slate-50 rounded-[2rem] p-6 border border-slate-200 shadow-inner">
+    <h3 class="text-xs font-black text-slate-400 mb-4 tracking-widest uppercase flex items-center">
+        <span class="mr-2">📋</span> Patch History
+    </h3>
+    <div class="patch-log-scroll space-y-4 pr-2 text-sm overflow-y-auto" style="max-height: 250px;">
+        
+        <div class="border-b border-slate-200 pb-3">
+            <div class="flex items-center mb-1">
+                <span class="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">v1.8.2</span>
+                <span class="font-bold text-slate-700">UI 레이블 가독성 개선</span>
             </div>
+            <p class="text-slate-500 text-xs leading-relaxed">모드별 이모티콘 추가 및 텍스트 직관화 (🚀 🎲 🔥)</p>
+        </div>
+
+        <div class="border-b border-slate-200 pb-3">
+            <div class="flex items-center mb-1">
+                <span class="bg-slate-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">v1.8.1</span>
+                <span class="font-bold text-slate-700">홈 버튼 로직 수정</span>
+            </div>
+            <p class="text-slate-500 text-xs leading-relaxed">일부 브라우저에서 홈으로 버튼이 작동하지 않던 문제 해결</p>
+        </div>
+
+        <div class="border-b border-slate-200 pb-3">
+            <div class="flex items-center mb-1">
+                <span class="bg-slate-400 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">v1.7.0</span>
+                <span class="font-bold text-slate-700">내비게이션 및 기록 복구</span>
+            </div>
+            <p class="text-slate-500 text-xs leading-relaxed">누락된 이전 패치 기록 복구 및 '처음으로' 버튼 추가</p>
+        </div>
+
+        <div class="border-b border-slate-200 pb-3">
+            <div class="flex items-center mb-1">
+                <span class="bg-slate-400 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">v1.6.0</span>
+                <span class="font-bold text-slate-700">시독성 강화 및 UI 확장</span>
+            </div>
+            <p class="text-slate-500 text-xs leading-relaxed">글꼴 크기 상향 및 컨테이너 너비 확장 최적화</p>
+        </div>
+
+        <div class="border-b border-slate-200 pb-3">
+            <div class="flex items-center mb-1">
+                <span class="bg-slate-400 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">v1.5.0</span>
+                <span class="font-bold text-slate-700">기능 개선</span>
+            </div>
+            <p class="text-slate-500 text-xs leading-relaxed">오답 노트 스크롤 도입 및 결과창 UI 개선</p>
+        </div>
+
+        <div class="border-b border-slate-200 pb-3">
+            <div class="flex items-center mb-1">
+                <span class="bg-slate-400 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">v1.4.0</span>
+                <span class="font-bold text-slate-700">데이터 정제</span>
+            </div>
+            <p class="text-slate-500 text-xs leading-relaxed">유사 답안 처리 로직 강화 (공백 제거 등)</p>
+        </div>
+
+        <div class="border-b border-slate-200 pb-3">
+            <div class="flex items-center mb-1">
+                <span class="bg-slate-400 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">v1.3.0</span>
+                <span class="font-bold text-slate-700">학습 모드 세분화</span>
+            </div>
+            <p class="text-slate-500 text-xs leading-relaxed">랜덤 20제 및 100제 전용 모드 추가</p>
+        </div>
+
+        <div class="border-b border-slate-200 pb-3">
+            <div class="flex items-center mb-1">
+                <span class="bg-slate-400 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">v1.2.0</span>
+                <span class="font-bold text-slate-700">디자인 리뉴얼</span>
+            </div>
+            <p class="text-slate-500 text-xs leading-relaxed">Tailwind CSS 기반 모던 UI 전면 적용</p>
+        </div>
+
+        <div class="border-b border-slate-200 pb-3">
+            <div class="flex items-center mb-1">
+                <span class="bg-slate-400 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">v1.1.0</span>
+                <span class="font-bold text-slate-700">오답 재풀이</span>
+            </div>
+            <p class="text-slate-500 text-xs leading-relaxed">틀린 문제만 다시 풀기 기능 추가</p>
+        </div>
+
+        <div class="pb-3">
+            <div class="flex items-center mb-1">
+                <span class="bg-slate-400 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">v1.0.0</span>
+                <span class="font-bold text-slate-700">최초 출시</span>
+            </div>
+            <p class="text-slate-500 text-xs leading-relaxed">의학용어 100제 주관식 시스템 런칭</p>
+        </div>
+
+    </div>
+</div>
 
             <!-- 학습 모드 선택 섹션 -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
