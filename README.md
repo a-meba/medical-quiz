@@ -57,7 +57,7 @@
 
 ## 💬 프로젝트 후기
 
-> "처음 시작할 때는 100문제를 언제 다 넣나 싶었는데, 막상 배포하고 친구들이 공부에 도움 된다고 하니 정말 뿌듯합니다. 앞으로 4~6장 데이터도 추가할 계획입니다!"
+> " "
 
 ---
-© 2024 **Medical Terminology Quiz Project**. Powered by `a-meba`.
+© 2026 **Medical Terminology Quiz Project**. Powered by `a-meba`.
