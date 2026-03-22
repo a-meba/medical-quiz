@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>의학용어 100제 v1.8.2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+        body { 
+            font-family: 'Noto Sans KR', sans-serif; 
+            background-color: #f1f5f9; 
+            word-break: keep-all;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .hidden { display: none; }
+        .quiz-card { 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            max-width: 850px;
+            margin: 0 auto;
+        }
+        .patch-log-scroll {
+            max-height: 250px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        .patch-log-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .patch-log-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .mode-btn { 
+            transition: all 0.2s ease;
+            border: 2px solid #e2e8f0;
+        }
+        .mode-btn.active { 
+            border-color: #2563eb; 
+            background-color: #eff6ff;
+            color: #1e40af;
+        }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-10">
+
+    <div id="app" class="quiz-card bg-white rounded-[3rem] p-6 md:p-12 fade-in min-h-[700px] flex flex-col justify-center border border-slate-200">
+        
+        <!-- 시작 화면 -->
+        <div id="start-screen" class="space-y-8">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-black text-slate-900 leading-tight">
+                    의학용어 1~3장<br><span class="text-blue-600 font-black">주관식 100제</span>
+                </h1>
+                <p class="text-slate-400 mt-3 font-bold text-base tracking-widest">v1.8.2 STABILITY UPDATE</p>
+            </div>
+
+            <!-- 패치 내역 -->
+            <div class="bg-slate-50 rounded-[2rem] p-6 border border-slate-200 shadow-inner">
+                <h3 class="text-xs font-black text-slate-400 mb-4 tracking-widest uppercase flex items-center">
+                    <span class="mr-2">📋</span> Patch History
+                </h3>
+                <div class="patch-log-scroll space-y-4 pr-2 text-sm">
+                    <div class="border-b border-slate-200 pb-3">
+                        <div class="flex items-center mb-1">
+                            <span class="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">v1.8.2</span>
+                            <span class="font-bold text-slate-700">UI 레이블 가독성 개선</span>
+                        </div>
+                        <p class="text-slate-500 text-xs leading-relaxed">모드별 이모티콘 추가 및 텍스트 직관화 (🚀 🎲 🔥)</p>
+                    </div>
+                    <div class="border-b border-slate-200 pb-3">
+                        <div class="flex items-center mb-1">
+                            <span class="bg-slate-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">v1.8.1</span>
+                            <span class="font-bold text-slate-700">홈 버튼 로직 수정</span>
+                        </div>
+                        <p class="text-slate-500 text-xs leading-relaxed">일부 브라우저에서 홈으로 버튼이 작동하지 않던 문제 해결</p>
+                    </div>
+                    <div class="border-b border-slate-200 pb-3 text-slate-400">
+                        <div class="flex items-center mb-1">
+                            <span class="bg-slate-300 text-white text-[10px] px-2 py-0.5 rounded-full font-bold mr-2 tracking-tighter">OLD</span>
+                            <span class="font-bold">v1.0.0 ~ v1.7.0 내역 생략</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 학습 모드 선택 섹션 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <button onclick="selectMode('all')" id="btn-all" class="mode-btn active p-5 rounded-[1.5rem] text-center">
+                    <div class="font-black text-lg mb-1">정주행 🚀</div>
+                    <div class="text-[11px] opacity-60 font-bold uppercase tracking-widest">SEQ 1-100</div>
+                </button>
+                <button onclick="selectMode('random100')" id="btn-random100" class="mode-btn p-5 rounded-[1.5rem] text-center">
+                    <div class="font-black text-lg mb-1">전체 랜덤 🎲</div>
+                    <div class="text-[11px] opacity-60 font-bold uppercase tracking-widest">SHUFFLE 100</div>
+                </button>
+                <button onclick="selectMode('random20')" id="btn-random20" class="mode-btn p-5 rounded-[1.5rem] text-center">
+                    <div class="font-black text-lg mb-1">랜덤 20제 🔥</div>
+                    <div class="text-[11px] opacity-60 font-bold uppercase tracking-widest">QUICK 20</div>
+                </button>
+            </div>
+
+            <button onclick="startQuiz()" class="w-full bg-blue-600 text-white py-6 rounded-[2rem] font-black text-2xl shadow-2xl shadow-blue-200 active:scale-95 transition-all">학습 시작하기</button>
+        </div>
+
+        <!-- 퀴즈 화면 -->
+        <div id="quiz-screen" class="hidden h-full flex flex-col space-y-6">
+            <div class="flex justify-between items-end px-2">
+                <div>
+                    <span id="q-count" class="text-blue-600 font-black text-sm tracking-widest uppercase"></span>
+                    <h2 id="q-id" class="text-[11px] text-slate-300 font-bold tracking-tight"></h2>
+                </div>
+                <button onclick="location.reload()" class="text-[12px] font-black text-slate-400 bg-slate-100 px-4 py-2 rounded-full hover:bg-slate-200 transition-colors">처음으로 (HOME)</button>
+            </div>
+
+            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden shadow-inner">
+                <div id="progress-bar" class="h-full bg-blue-500 transition-all duration-500 rounded-full" style="width: 0%"></div>
+            </div>
+
+            <div class="flex-grow flex flex-col justify-center max-w-[700px] mx-auto w-full">
+                <div class="bg-slate-50 p-10 md:p-14 rounded-[3rem] border border-slate-100 mb-10 min-h-[200px] flex items-center justify-center text-center shadow-inner">
+                    <p id="question-text" class="text-2xl md:text-3xl font-black text-slate-800 leading-normal"></p>
+                </div>
+
+                <div class="space-y-6">
+                    <input type="text" id="answer-input" placeholder="정답을 입력하고 엔터를 치세요" 
+                           class="w-full p-6 bg-white border-2 border-slate-200 rounded-[2rem] focus:border-blue-500 outline-none text-xl font-bold text-center transition-all shadow-sm"
+                           onkeypress="if(event.key==='Enter') handleAction()" autocomplete="off">
+                    
+                    <div id="feedback" class="hidden p-5 rounded-[1.5rem] text-center font-black text-lg animate-bounce"></div>
+
+                    <button id="action-btn" onclick="handleAction()" class="w-full bg-slate-900 text-white py-6 rounded-[2rem] font-black text-xl shadow-xl active:scale-95 transition-all">확인</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 결과 화면 -->
+        <div id="result-screen" class="hidden text-center space-y-10">
+            <div>
+                <h2 class="text-4xl font-black text-slate-900">STUDY COMPLETE</h2>
+                <p class="text-slate-400 font-black text-lg mt-1">오늘의 학습이 완료되었습니다!</p>
+            </div>
+
+            <div class="bg-blue-600 text-white p-12 rounded-[4rem] shadow-2xl shadow-blue-200 inline-block w-full max-w-[320px] transition-transform hover:scale-105">
+                <p class="text-sm font-black opacity-70 mb-2 tracking-[0.2em] uppercase">Your Performance</p>
+                <div id="final-score" class="text-6xl font-black tracking-tighter">0 / 100</div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-[500px] mx-auto">
+                <button id="retry-wrong-btn" onclick="retryWrongs()" class="hidden w-full bg-orange-500 text-white py-5 rounded-[1.5rem] font-black text-lg shadow-lg shadow-orange-100 transition-all hover:bg-orange-600">틀린 문제만 재도전</button>
+                <button id="view-wrong-btn" onclick="toggleWrongList()" class="hidden w-full bg-slate-100 text-slate-600 py-5 rounded-[1.5rem] font-black text-lg transition-all hover:bg-slate-200">오답 리스트 확인</button>
+                <button onclick="location.reload()" class="md:col-span-2 w-full bg-slate-900 text-white py-5 rounded-[1.5rem] font-black text-lg transition-all hover:bg-black">메인 화면으로</button>
+            </div>
+
+            <div id="wrong-list-container" class="hidden text-left bg-white border border-slate-200 rounded-[2.5rem] p-8 mt-6 max-h-[400px] overflow-y-auto space-y-4 shadow-2xl">
+                <h4 class="font-black text-red-500 text-lg mb-4 flex items-center"><span class="mr-2">❌</span> 오답 체크 리스트</h4>
+                <div id="wrong-items-content" class="space-y-4"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const quizData = [
+            { id: 1, q: "심장(heart)을 뜻하는 어근/결합형은?", a: ["cardi/o"] },
+            { id: 2, q: "위(stomach)를 뜻하는 어근/결합형은?", a: ["gastr/o"] },
+            { id: 3, q: "간(liver)을 뜻하는 어근/결합형은?", a: ["hepat/o"] },
+            { id: 4, q: "코(nose)를 뜻하는 어근/결합형은?", a: ["rhin/o"] },
+            { id: 5, q: "관절(joint)을 뜻하는 어근/결합형은?", a: ["arthr/o"] },
+            { id: 6, q: "뼈(bone)를 뜻하는 어근/결합형은?", a: ["oste/o"] },
+            { id: 7, q: "신경(nerve)을 뜻하는 어근/결합형은?", a: ["neur/o"] },
+            { id: 8, q: "암(cancer)을 뜻하는 어근/결합형은?", a: ["carcin/o"] },
+            { id: 9, q: "머리(head)를 뜻하는 어근/결합형은?", a: ["cephal/o"] },
+            { id: 10, q: "전기(electricity)를 뜻하는 어근/결합형은?", a: ["electr/o"] },
+            { id: 11, q: "aden/o의 뜻은?", a: ["샘", "샘(선)", "선"] },
+            { id: 12, q: "bi/o의 뜻은?", a: ["생명"] },
+            { id: 13, q: "cerebr/o의 뜻은?", a: ["대뇌"] },
+            { id: 14, q: "cyt/o의 뜻은?", a: ["세포"] },
+            { id: 15, q: "enter/o의 뜻은?", a: ["장"] },
+            { id: 16, q: "hemat/o의 뜻은?", a: ["혈액"] },
+            { id: 17, q: "laryng/o의 뜻은?", a: ["후두"] },
+            { id: 18, q: "nephr/o의 뜻은?", a: ["신장", "콩팥", "콩팥(신장)"] },
+            { id: 19, q: "ophthalm/o의 뜻은?", a: ["눈"] },
+            { id: 20, q: "path/o의 뜻은?", a: ["질병"] },
+            { id: 21, q: "접미사 -itis의 뜻은?", a: ["염증"] },
+            { id: 22, q: "접미사 -ectomy의 뜻은?", a: ["절제술", "절제"] },
+            { id: 23, q: "접미사 -oma의 뜻은?", a: ["종양"] },
+            { id: 24, q: "접미사 -pathy의 뜻은?", a: ["질환", "질병"] },
+            { id: 25, q: "접미사 -megaly의 뜻은?", a: ["비대"] },
+            { id: 26, q: "접미사 -malacia의 뜻은?", a: ["연화", "연화증"] },
+            { id: 27, q: "접미사 -sclerosis의 뜻은?", a: ["경화", "경화증"] },
+            { id: 28, q: "접미사 -osis의 뜻은?", a: ["상태", "증상", "비정상적 상태"] },
+            { id: 29, q: "접미사 -emia의 뜻은?", a: ["혈액 상태", "혈액의 상태"] },
+            { id: 30, q: "접미사 -rrhea의 뜻은?", a: ["흐름", "분비물", "유출"] },
+            { id: 31, q: "접미사 -rrhage의 뜻은?", a: ["파열", "출혈", "터짐"] },
+            { id: 32, q: "접미사 -rrhexis의 뜻은?", a: ["파열"] },
+            { id: 33, q: "접미사 -stenosis의 뜻은?", a: ["협착", "협착증"] },
+            { id: 34, q: "접미사 -ptosis의 뜻은?", a: ["처짐", "하수", "하수증"] },
+            { id: 35, q: "접미사 -ectasis의 뜻은?", a: ["확장", "확장증"] },
+            { id: 36, q: "접미사 -algia의 뜻은?", a: ["통증"] },
+            { id: 37, q: "접미사 -plasty의 뜻은?", a: ["성형술", "성형", "복구"] },
+            { id: 38, q: "접미사 -centesis의 뜻은?", a: ["천자"] },
+            { id: 39, q: "접미사 -otomy의 뜻은?", a: ["절개술", "절개"] },
+            { id: 40, q: "접미사 -ostomy의 뜻은?", a: ["개구술", "창냄술", "인공개구부"] },
+            { id: 41, q: "보는 기구(instrument for viewing)를 뜻하는 접미사는?", a: ["-scope", "scope"] },
+            { id: 42, q: "시각적 검사과정(process of viewing)을 뜻하는 접미사는?", a: ["-scopy", "scopy"] },
+            { id: 43, q: "기록된 것(record)을 뜻하는 접미사는?", a: ["-gram", "gram"] },
+            { id: 44, q: "기록하는 법(process of recording)을 뜻하는 접미사는?", a: ["-graphy", "graphy"] },
+            { id: 45, q: "측정 기구(instrument to measure)를 뜻하는 접미사는?", a: ["-meter", "meter"] },
+            { id: 46, q: "접두사 a- / an-의 뜻은?", a: ["없는", "없음", "부정", "결핍"] },
+            { id: 47, q: "접두사 brady-의 뜻은?", a: ["느린", "느림"] },
+            { id: 48, q: "접두사 tachy-의 뜻은?", a: ["빠른", "빠름"] },
+            { id: 49, q: "접두사 hyper-의 뜻은?", a: ["과도한", "높은", "과다", "초과"] },
+            { id: 50, q: "접두사 hypo-의 뜻은?", a: ["부족한", "낮은", "과소", "미달"] },
+            { id: 51, q: "위(Stomach)의 어근을 쓰시오.", a: ["gastr"] },
+            { id: 52, q: "심장(Heart)의 어근을 쓰시오.", a: ["cardi"] },
+            { id: 53, q: "간(Liver)의 어근을 쓰시오.", a: ["hepat"] },
+            { id: 54, q: "신경(Nerve)의 어근을 쓰시오.", a: ["neur"] },
+            { id: 55, q: "관절(Joint)의 어근을 쓰시오.", a: ["arthr"] },
+            { id: 56, q: "뼈(Bone)의 어근을 쓰시오.", a: ["oste"] },
+            { id: 57, q: "코(Nose)의 어근을 쓰시오.", a: ["rhin"] },
+            { id: 58, q: "세포(Cell)의 어근을 쓰시오.", a: ["cyt"] },
+            { id: 59, q: "콩팥(Kidney)의 어근을 쓰시오.", a: ["nephr"] },
+            { id: 60, q: "혈액(Blood)의 어근을 쓰시오.", a: ["hemat"] },
+            { id: 61, q: "염증(Inflammation)을 뜻하는 접미사는?", a: ["-itis", "itis"] },
+            { id: 62, q: "통증(Pain)을 뜻하는 접미사는?", a: ["-algia", "algia"] },
+            { id: 63, q: "질환(Disease)을 뜻하는 접미사는?", a: ["-pathy", "pathy"] },
+            { id: 64, q: "종양(Tumor)을 뜻하는 접미사는?", a: ["-oma", "oma"] },
+            { id: 65, q: "비대(Enlargement)를 뜻하는 접미사는?", a: ["-megaly", "megaly"] },
+            { id: 66, q: "연화(Softening)를 뜻하는 접미사는?", a: ["-malacia", "malacia"] },
+            { id: 67, q: "절제(Surgical removal)를 뜻하는 접미사는?", a: ["-ectomy", "ectomy"] },
+            { id: 68, q: "절개(Incision)를 뜻하는 접미사는?", a: ["-otomy", "otomy"] },
+            { id: 69, q: "인공 개구부를 만드는 수술을 뜻하는 접미사는?", a: ["-ostomy", "ostomy"] },
+            { id: 70, q: "성형/복구(Surgical repair)를 뜻하는 접미사는?", a: ["-plasty", "plasty"] },
+            { id: 71, q: "액체를 뽑아내는 천자(Puncture)를 뜻하는 접미사는?", a: ["-centesis", "centesis"] },
+            { id: 72, q: "봉합(Suture)을 뜻하는 접미사는?", a: ["-rrhaphy", "rrhaphy"] },
+            { id: 73, q: "파괴/분해(Destruction)를 뜻하는 접미사는?", a: ["-lysis", "lysis"] },
+            { id: 74, q: "측정법(Process of measuring)을 뜻하는 접미사는?", a: ["-metry", "metry"] },
+            { id: 75, q: "내시경 검사 등 관찰법을 뜻하는 접미사는?", a: ["-scopy", "scopy"] },
+            { id: 76, q: "빠른(Fast)을 뜻하는 접두사는?", a: ["tachy-", "tachy"] },
+            { id: 77, q: "느린(Slow)을 뜻하는 접두사는?", a: ["brady-", "brady"] },
+            { id: 78, q: "정상보다 높은/과도한 상태의 접두사는?", a: ["hyper-", "hyper"] },
+            { id: 79, q: "정상보다 낮은/부족한 상태의 접두사는?", a: ["hypo-", "hypo"] },
+            { id: 80, q: "어려운/아픈/비정상적인 상태의 접두사는?", a: ["dys-", "dys"] },
+            { id: 81, q: "없는(Without)을 뜻하는 접두사 2개는?", a: ["a-, an-", "a, an"] },
+            { id: 82, q: "새로운(New)을 뜻하는 접두사는?", a: ["neo-", "neo"] },
+            { id: 83, q: "많은(Many)을 뜻하는 접두사(m 시작)는?", a: ["multi-", "multi"] },
+            { id: 84, q: "전체/모든(All)을 뜻하는 접두사는?", a: ["pan-", "pan"] },
+            { id: 85, q: "첫 번째(First)를 뜻하는 접두사는?", a: ["primi-", "primi"] },
+            { id: 86, q: "절반(Half)을 뜻하는 접두사는?", a: ["hemi-", "semi-", "hemi", "semi"] },
+            { id: 87, q: "사이(Between)를 뜻하는 접두사는?", a: ["inter-", "inter"] },
+            { id: 88, q: "안/내부(Inside)를 뜻하는 접두사(i 시작)는?", a: ["intra-", "intra"] },
+            { id: 89, q: "아래(Below)를 뜻하는 접두사(s 시작)는?", a: ["sub-", "sub"] },
+            { id: 90, q: "주위(Around)를 뜻하는 접두사는?", a: ["peri-", "peri"] },
+            { id: 91, q: "이전/전(Before)을 뜻하는 접두사는?", a: ["pre-", "pro-", "pre", "pro"] },
+            { id: 92, q: "이후/후(After)를 뜻하는 접두사는?", a: ["post-", "post"] },
+            { id: 93, q: "뒤/후방(Behind)을 뜻하는 접두사는?", a: ["retro-", "retro"] },
+            { id: 94, q: "통과하여(Through)를 뜻하는 접두사는?", a: ["trans-", "dia-", "trans", "dia"] },
+            { id: 95, q: "자기 자신(Self)을 뜻하는 접두사는?", a: ["auto-", "auto"] },
+            { id: 96, q: "어근과 결합모음이 합쳐진 용어의 형태는?", a: ["결합형", "combining form"] },
+            { id: 97, q: "요소들을 연결할 때 사용하는 모음은?", a: ["결합모음", "combining vowel"] },
+            { id: 98, q: "질병을 발견한 사람의 이름을 딴 용어는?", a: ["인명용어", "에포님", "eponym"] },
+            { id: 99, q: "Vertebra의 복수형은?", a: ["vertebrae"] },
+            { id: 100, q: "Alveolus의 복수형은?", a: ["alveoli"] }
+        ];
+
+        let currentQuiz = [];
+        let currentIndex = 0;
+        let score = 0;
+        let wrongAnswers = [];
+        let isAnswerChecked = false;
+        let selectedMode = 'all';
+
+        function selectMode(mode) {
+            selectedMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${mode}`).classList.add('active');
+        }
+
+        function startQuiz() {
+            currentQuiz = [...quizData];
+            if (selectedMode === 'random100') {
+                currentQuiz.sort(() => Math.random() - 0.5);
+            } else if (selectedMode === 'random20') {
+                currentQuiz.sort(() => Math.random() - 0.5);
+                currentQuiz = currentQuiz.slice(0, 20);
+            }
+            
+            currentIndex = 0;
+            score = 0;
+            wrongAnswers = [];
+            
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            isAnswerChecked = false;
+            const q = currentQuiz[currentIndex];
+            document.getElementById('q-count').innerText = `Question ${currentIndex + 1} / ${currentQuiz.length}`;
+            document.getElementById('q-id').innerText = `DATASET_ID: #${String(q.id).padStart(3, '0')}`;
+            document.getElementById('question-text').innerText = q.q;
+            document.getElementById('progress-bar').style.width = `${((currentIndex + 1) / currentQuiz.length) * 100}%`;
+            
+            const input = document.getElementById('answer-input');
+            input.value = "";
+            input.disabled = false;
+            input.className = "w-full p-6 bg-white border-2 border-slate-200 rounded-[2rem] focus:border-blue-500 outline-none text-xl font-bold text-center transition-all shadow-sm";
+            
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('action-btn').innerText = "확인";
+            document.getElementById('action-btn').className = "w-full bg-slate-900 text-white py-6 rounded-[2rem] font-black text-xl shadow-xl active:scale-95 transition-all";
+            
+            setTimeout(() => input.focus(), 100);
+        }
+
+        function handleAction() {
+            if (!isAnswerChecked) {
+                checkAnswer();
+            } else {
+                nextQuestion();
+            }
+        }
+
+        function checkAnswer() {
+            const input = document.getElementById('answer-input');
+            const userVal = input.value.trim().toLowerCase().replace(/\s/g, '').replace(/–/g, '-');
+            const q = currentQuiz[currentIndex];
+            
+            if (userVal === "") return;
+
+            const isCorrect = q.a.some(ans => {
+                const normAns = ans.toLowerCase().replace(/\s/g, '').replace(/–/g, '-');
+                return normAns === userVal;
+            });
+
+            isAnswerChecked = true;
+            input.disabled = true;
+            
+            const fb = document.getElementById('feedback');
+            fb.classList.remove('hidden');
+            
+            if (isCorrect) {
+                score++;
+                fb.innerText = "✨ GREAT! 정답입니다.";
+                fb.className = "p-5 rounded-[1.5rem] text-center font-black text-lg bg-green-50 text-green-600 mb-6 animate-bounce";
+                input.classList.add('border-green-500', 'bg-green-50');
+            } else {
+                wrongAnswers.push({ ...q, userVal: input.value });
+                fb.innerHTML = `❌ 오답입니다<br><span class="text-sm opacity-80">정답: ${q.a[0]}</span>`;
+                fb.className = "p-5 rounded-[1.5rem] text-center font-black text-lg bg-red-50 text-red-600 mb-6 animate-bounce";
+                input.classList.add('border-red-500', 'bg-red-50');
+            }
+
+            document.getElementById('action-btn').innerText = "다음 문제로 이동";
+            document.getElementById('action-btn').className = "w-full bg-blue-600 text-white py-6 rounded-[2rem] font-black text-xl shadow-xl active:scale-95 transition-all";
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < currentQuiz.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = `${score} / ${currentQuiz.length}`;
+            
+            if (wrongAnswers.length > 0) {
+                document.getElementById('retry-wrong-btn').classList.remove('hidden');
+                document.getElementById('view-wrong-btn').classList.remove('hidden');
+                renderWrongItems();
+            }
+        }
+
+        function renderWrongItems() {
+            const container = document.getElementById('wrong-items-content');
+            container.innerHTML = "";
+            wrongAnswers.forEach(item => {
+                const div = document.createElement('div');
+                div.className = "p-5 bg-slate-50 rounded-[1.5rem] border-l-8 border-red-500 shadow-sm";
+                div.innerHTML = `
+                    <p class="text-sm font-black text-slate-800 mb-3">${item.q}</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[11px] bg-red-100 text-red-600 px-3 py-1.5 rounded-full font-black">내 입력: ${item.userVal || '(미입력)'}</span>
+                        <span class="text-[11px] bg-blue-600 text-white px-3 py-1.5 rounded-full font-black tracking-tighter">정답: ${item.a[0]}</span>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function toggleWrongList() {
+            const list = document.getElementById('wrong-list-container');
+            const btn = document.getElementById('view-wrong-btn');
+            if (list.classList.contains('hidden')) {
+                list.classList.remove('hidden');
+                btn.innerText = "목록 접기";
+                list.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                list.classList.add('hidden');
+                btn.innerText = "오답 리스트 확인";
+            }
+        }
+
+        function retryWrongs() {
+            currentQuiz = [...wrongAnswers];
+            currentQuiz.sort(() => Math.random() - 0.5);
+            currentIndex = 0;
+            score = 0;
+            wrongAnswers = [];
+            
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('wrong-list-container').classList.add('hidden');
+            
+            showQuestion();
+        }
+    </script>
+</body>
+</html>
