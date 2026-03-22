@@ -53,7 +53,7 @@
 
 | 이름 | 역할 | Github |
 | :--- | :--- | :--- |
-| **심규성 / 황보창규** | 기획 및 개발 | [@a-meba](https://github.com/a-meba) |
+| **심규성** | 기획 및 개발 | [@a-meba](https://github.com/a-meba) |
 
 ## 💬 프로젝트 후기
 
